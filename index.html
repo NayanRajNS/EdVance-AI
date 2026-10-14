@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdVance AI — Dual Student & Teacher Ecosystem</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom animations for Visual Concept Hub */
+        @keyframes orbit {
+            0% { transform: rotate(0deg) translateX(45px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(45px) rotate(-360deg); }
+        }
+        @keyframes tectonic-left {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(15px) translateY(-5px); }
+        }
+        @keyframes tectonic-right {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-15px) translateY(8px); }
+        }
+        .electron-orbit-1 { animation: orbit 3s linear infinite; }
+        .electron-orbit-2 { animation: orbit 3s linear infinite; animation-delay: -1.5s; }
+        .plate-left { animation: tectonic-left 4s ease-in-out infinite; }
+        .plate-right { animation: tectonic-right 4s ease-in-out infinite; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white pb-16">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-br from-indigo-500 to-cyan-500 p-2 rounded-xl text-white shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-cyan-400 bg-clip-text text-transparent">EdVance AI</span>
+                    <span class="hidden sm:inline-block text-[11px] ml-2 px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium">Groq Llama 3.3 + Gemini 2.5</span>
+                </div>
+            </div>
+
+            <!-- Mode Switcher & Global Language Selector -->
+            <div class="flex items-center space-x-3">
+                <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+                    <button onclick="switchMode('student')" id="btn-student" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md flex items-center space-x-1.5">
+                        <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                        <span>Student Hub (7)</span>
+                    </button>
+                    <button onclick="switchMode('teacher')" id="btn-teacher" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white flex items-center space-x-1.5">
+                        <i data-lucide="presentation" class="w-4 h-4"></i>
+                        <span>Teacher Center (4)</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5">
+                    <i data-lucide="languages" class="w-4 h-4 text-cyan-400 mr-1.5"></i>
+                    <select id="global-lang" class="bg-transparent text-xs font-medium text-slate-200 focus:outline-none cursor-pointer">
+                        <option value="English" class="bg-slate-900">English</option>
+                        <option value="Malayalam" class="bg-slate-900">മലയാളം (Malayalam)</option>
+                        <option value="Hindi" class="bg-slate-900">हिन्दी (Hindi)</option>
+                        <option value="Spanish" class="bg-slate-900">Español (Spanish)</option>
+                        <option value="French" class="bg-slate-900">Français (French)</option>
+                        <option value="Arabic" class="bg-slate-900">العربية (Arabic)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================================================= -->
+        <!-- 🎓 STUDENT HUB (ALL 7 FEATURES)                                           -->
+        <!-- ========================================================================= -->
+        <div id="view-student" class="space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-800 pb-5 gap-4">
+                <div>
+                    <div class="inline-flex items-center space-x-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-1">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                        <span>Interactive Learning Suite</span>
+                    </div>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white">Student Hub</h1>
+                    <p class="text-slate-400 text-sm mt-1">7 AI-powered tools built for ISC, CBSE, IGCSE, and IB curriculums with instant localization.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs text-slate-400">
+                    <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800">⚡ Groq Llama 3.3</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800">👁️ Gemini Vision OCR</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800">🎥 WebRTC Ready</span>
+                </div>
+            </div>
+
+            <!-- Row 1: Feature 1 (Snap & Simplify) & Feature 2 (Live Writing Vision Tutor) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- 1. Snap & Simplify (Textbook OCR & Translation) -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-cyan-500/10 p-2.5 rounded-xl text-cyan-400 border border-cyan-500/20">
+                                    <i data-lucide="scan-text" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-white">1. Snap & Simplify (Textbook OCR & Translation)</h2>
+                                    <p class="text-xs text-slate-400">Upload textbook pages or paste dense jargon to simplify & translate</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- File Upload / Preset Simulation -->
+                        <div class="mb-3 flex items-center gap-2">
+                            <label class="flex-1 cursor-pointer bg-slate-950 hover:bg-slate-900 border border-dashed border-slate-700 rounded-xl p-2.5 text-center transition-all flex items-center justify-center space-x-2 text-xs text-slate-300">
+                                <i data-lucide="upload-cloud" class="w-4 h-4 text-cyan-400"></i>
+                                <span id="ocr-file-label">Upload Textbook Screenshot (PNG/JPG)</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="simulateTextbookOCR(this)">
+                            </label>
+                            <button onclick="loadSampleJargon()" class="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-xl text-slate-300 font-medium transition-all" title="Load Sample Physics Jargon">
+                                Load Sample
+                            </button>
+                        </div>
+
+                        <textarea id="simplify-input" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 mb-3" placeholder="Or paste dense academic text here (e.g., Quantum Decoherence, Thermodynamics)..."></textarea>
+                    </div>
+
+                    <div>
+                        <button onclick="runAI('simplify')" id="btn-simplify" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold py-2.5 rounded-xl transition-all shadow-lg shadow-cyan-600/20 flex items-center justify-center space-x-2 text-sm">
+                            <i data-lucide="wand-2" class="w-4 h-4"></i>
+                            <span>Strip Jargon & Translate (Global Selector)</span>
+                        </button>
+                        <div id="out-simplify" class="mt-3 p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-300 hidden max-h-48 overflow-y-auto leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Live Writing Vision Tutor -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-400 border border-emerald-500/20">
+                                    <i data-lucide="eye" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-white">2. Live Writing Vision Tutor</h2>
+                                    <p class="text-xs text-slate-400">Real-time webcam notebook monitoring & calculation verification</p>
+                                </div>
+                            </div>
+                            <button onclick="toggleVisionCamera()" id="btn-vision-cam" class="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all">
+                                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                                <span id="vision-cam-text">Start Webcam</span>
+                            </button>
+                        </div>
+
+                        <!-- Simulated / Real Camera Feed Box -->
+                        <div class="relative bg-slate-950 border border-slate-800 rounded-xl h-44 overflow-hidden mb-3 flex items-center justify-center">
+                            <video id="vision-video" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
+                            <div id="vision-placeholder" class="text-center p-4">
+                                <i data-lucide="notebook-pen" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                                <p class="text-xs text-slate-400">Point webcam at your notebook OR type your handwritten work below for live step verification.</p>
+                            </div>
+                            <!-- HUD Overlay -->
+                            <div class="absolute top-2.5 left-2.5 bg-slate-900/90 border border-slate-700 px-2.5 py-1 rounded-md text-[11px] text-emerald-400 flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                <span>Vision HUD: Monitoring Calculations</span>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-2">
+                            <input type="text" id="vision-input" value="∫ 2x dx = x^2 (Forgot constant + C)" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500" placeholder="Enter equation or handwritten line currently on notebook...">
+                            <button onclick="runAI('vision')" id="btn-vision" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all shrink-0 flex items-center space-x-1.5">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                <span>Verify Step</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="out-vision" class="mt-3 p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-300 hidden max-h-40 overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <!-- Row 2: Feature 3 (Universal Exam Generator & Repository) & Feature 4 (Visual Concept Hub) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- 3. Universal Exam Generator & Past Board Papers Repository -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="bg-amber-500/10 p-2.5 rounded-xl text-amber-400 border border-amber-500/20">
+                                <i data-lucide="file-check-2" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-white">3. Universal Exam Generator & Board Archive</h2>
+                                <p class="text-xs text-slate-400">Tailored to ISC, CBSE, IGCSE & IB with marking schemes</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 mb-3">
+                            <select id="exam-board" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                                <option value="ISC (Class 11/12)">ISC Board</option>
+                                <option value="CBSE">CBSE Board</option>
+                                <option value="IGCSE">Cambridge IGCSE</option>
+                                <option value="IB Diploma">IB Diploma</option>
+                            </select>
+                            <input type="text" id="exam-topic" value="Electrostatics & Capacitance" placeholder="Subject / Topic..." class="col-span-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                        </div>
+
+                        <button onclick="runAI('exam')" id="btn-exam" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2 rounded-xl transition-all text-xs sm:text-sm flex items-center justify-center space-x-2 mb-4">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>Generate Custom Practice Set + Marking Scheme</span>
+                        </button>
+
+                        <!-- Downloadable Past Papers Repository -->
+                        <div class="border-t border-slate-800 pt-3">
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">📥 Past Board Papers Archive (With Marking Schemes)</span>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <button onclick="downloadMockPaper('ISC_Class11_Physics_2025.txt', 'ISC Class 11 Physics Past Paper & Marking Scheme')" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 p-2 rounded-lg flex items-center justify-between text-slate-300 transition-all">
+                                    <span class="truncate">📄 ISC XI Physics (2025)</span>
+                                    <i data-lucide="download" class="w-3.5 h-3.5 text-amber-400 shrink-0 ml-1"></i>
+                                </button>
+                                <button onclick="downloadMockPaper('CBSE_Class12_Chemistry_2025.txt', 'CBSE Chemistry Board Paper & Official Rubric')" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 p-2 rounded-lg flex items-center justify-between text-slate-300 transition-all">
+                                    <span class="truncate">📄 CBSE Chemistry (2025)</span>
+                                    <i data-lucide="download" class="w-3.5 h-3.5 text-amber-400 shrink-0 ml-1"></i>
+                                </button>
+                                <button onclick="downloadMockPaper('IGCSE_Mathematics_Extended.txt', 'IGCSE Math Past Paper + Step Solutions')" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 p-2 rounded-lg flex items-center justify-between text-slate-300 transition-all">
+                                    <span class="truncate">📄 IGCSE Math Paper 4</span>
+                                    <i data-lucide="download" class="w-3.5 h-3.5 text-amber-400 shrink-0 ml-1"></i>
+                                </button>
+                                <button onclick="downloadMockPaper('IB_HL_Biology_Paper1.txt', 'IB Diploma Biology HL Past Paper & Key')" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 p-2 rounded-lg flex items-center justify-between text-slate-300 transition-all">
+                                    <span class="truncate">📄 IB Biology HL (2025)</span>
+                                    <i data-lucide="download" class="w-3.5 h-3.5 text-amber-400 shrink-0 ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="out-exam" class="mt-3 p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-300 hidden max-h-48 overflow-y-auto"></div>
+                </div>
+
+                <!-- 4. Visual Concept Hub -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-purple-500/10 p-2.5 rounded-xl text-purple-400 border border-purple-500/20">
+                                    <i data-lucide="atom" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-white">4. Visual Concept Hub</h2>
+                                    <p class="text-xs text-slate-400">Interactive Science, Geography & History simulation modules</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module Selector Tabs -->
+                        <div class="flex space-x-2 mb-3">
+                            <button onclick="switchVisualTab('bond')" id="vtab-bond" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold bg-purple-600 text-white">⚛️ Molecular Bonds</button>
+                            <button onclick="switchVisualTab('tectonic')" id="vtab-tectonic" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-950 text-slate-400 border border-slate-800">🌋 Tectonic Relief</button>
+                            <button onclick="switchVisualTab('history')" id="vtab-history" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-950 text-slate-400 border border-slate-800">⏳ History Timeline</button>
+                        </div>
+
+                        <!-- Interactive Visual Stage -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 h-48 flex flex-col items-center justify-center relative overflow-hidden">
+                            
+                            <!-- Sub-module A: Molecular Bond Animation -->
+                            <div id="visual-bond" class="flex flex-col items-center justify-center w-full h-full">
+                                <div class="relative flex items-center justify-center space-x-12 my-auto">
+                                    <!-- Atom 1 -->
+                                    <div class="relative w-16 h-16 rounded-full border border-cyan-500/40 flex items-center justify-center">
+                                        <div class="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-[10px] font-bold text-slate-950">Na+</div>
+                                        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 absolute electron-orbit-1"></div>
+                                    </div>
+                                    <!-- Shared/Ionic Electron Bridge -->
+                                    <div class="text-xs text-purple-400 font-mono animate-pulse">⚡ Covalent / Ionic</div>
+                                    <!-- Atom 2 -->
+                                    <div class="relative w-16 h-16 rounded-full border border-purple-500/40 flex items-center justify-center">
+                                        <div class="w-7 h-7 rounded-full bg-purple-500 flex items-center justify-center text-[10px] font-bold text-white">Cl-</div>
+                                        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 absolute electron-orbit-2"></div>
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Interactive Electron Shell Transfer & Orbital Sharing Simulation</p>
+                            </div>
+
+                            <!-- Sub-module B: Tectonic Plate Relief Model -->
+                            <div id="visual-tectonic" class="hidden flex-col items-center justify-center w-full h-full">
+                                <div class="flex items-center justify-center space-x-1 my-auto">
+                                    <div class="plate-left bg-amber-700/80 border border-amber-500 px-6 py-4 rounded-l-lg text-xs font-bold text-amber-100">
+                                        Continental Plate ➔
+                                    </div>
+                                    <div class="text-rose-500 font-extrabold text-lg animate-bounce">🌋</div>
+                                    <div class="plate-right bg-cyan-800/80 border border-cyan-500 px-6 py-4 rounded-r-lg text-xs font-bold text-cyan-100">
+                                        ⬅ Oceanic Subduction
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Convergent Boundary Subduction Zone & Magma Upwelling Relief</p>
+                            </div>
+
+                            <!-- Sub-module C: Historical Timeline Walkthrough -->
+                            <div id="visual-history" class="hidden flex-col justify-between w-full h-full py-2">
+                                <input type="range" min="0" max="3" value="1" oninput="updateTimeline(this.value)" class="w-full accent-purple-500 cursor-pointer">
+                                <div id="timeline-card" class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center my-auto">
+                                    <span class="text-xs font-bold text-purple-400">1760 — First Industrial Revolution</span>
+                                    <p class="text-xs text-slate-300 mt-1">Transition to steam power, mechanized textile manufacturing, and iron production.</p>
+                                </div>
+                                <span class="text-[10px] text-slate-500 text-center">Drag slider to walk through historical eras</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Feature 5 (AI Homework Assistant) & Feature 6 (Peer Study Rooms) + Feature 7 (Culture Radar) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- 5. AI Homework Assistant (Groq Llama 3.3) -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="bg-indigo-500/10 p-2.5 rounded-xl text-indigo-400 border border-indigo-500/20">
+                                <i data-lucide="bot" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-white">5. AI Homework Assistant</h2>
+                                <p class="text-xs text-slate-400">Socratic hints in your language (No direct spoilers)</p>
+                            </div>
+                        </div>
+
+                        <div id="chat-messages" class="h-52 overflow-y-auto bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2.5 mb-3 text-xs sm:text-sm">
+                            <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-indigo-300">
+                                👋 Hi! Ask me any homework problem. I'll guide you with step-by-step hints in your selected global language without just handing out the final answer!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ask a math, science, or history doubt..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <button onclick="sendChatMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl transition-all flex items-center justify-center">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 6. In-Browser Peer Study Rooms -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-pink-500/10 p-2.5 rounded-xl text-pink-400 border border-pink-500/20">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-white">6. In-Browser Peer Study Rooms</h2>
+                                    <p class="text-xs text-slate-400">Lightweight WebRTC video & peer chat</p>
+                                </div>
+                            </div>
+                            <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Room #ISC-11</span>
+                        </div>
+
+                        <!-- Dual Peer Video Grid -->
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="bg-slate-950 border border-slate-800 rounded-xl h-24 flex flex-col items-center justify-center relative overflow-hidden">
+                                <i data-lucide="user-check" class="w-5 h-5 text-pink-400 mb-1"></i>
+                                <span class="text-[11px] text-slate-300 font-medium">You (Host)</span>
+                                <span class="text-[9px] text-emerald-400">🎤 Mic Active</span>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 rounded-xl h-24 flex flex-col items-center justify-center relative">
+                                <i data-lucide="user" class="w-5 h-5 text-cyan-400 mb-1"></i>
+                                <span class="text-[11px] text-slate-300 font-medium">Aarav (Classmate)</span>
+                                <span class="text-[9px] text-slate-400">✏️ Solving Q4...</span>
+                            </div>
+                        </div>
+
+                        <!-- Collaborative Peer Chat -->
+                        <div id="peer-chat-box" class="h-24 overflow-y-auto bg-slate-950 border border-slate-800 rounded-xl p-2.5 space-y-1.5 mb-2.5 text-xs">
+                            <div class="text-slate-400"><strong class="text-cyan-400">Aarav:</strong> Hey! Did you apply Kirchhoff's loop rule on the second mesh?</div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <input type="text" id="peer-input" onkeydown="if(event.key==='Enter') sendPeerMessage()" placeholder="Message study room..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-pink-500">
+                        <button onclick="sendPeerMessage()" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-2 rounded-xl text-xs font-semibold">Send</button>
+                    </div>
+                </div>
+
+                <!-- 7. Kid & Teen Culture Radar -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-orange-500/10 p-2.5 rounded-xl text-orange-400 border border-orange-500/20">
+                                    <i data-lucide="radar" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-white">7. Kid & Teen Culture Radar</h2>
+                                    <p class="text-xs text-slate-400">Live Groq AI space news, animated films & music</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="out-culture" class="h-52 overflow-y-auto bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2.5 text-xs text-slate-300 mb-3 leading-relaxed">
+                            <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
+                                <strong class="text-orange-400 block">🚀 Space & Science:</strong> NASA's Artemis lunar gateway habitats pass critical pressure tests.
+                            </div>
+                            <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
+                                <strong class="text-cyan-400 block">🎬 Animated Releases:</strong> Upcoming Spider-Verse & Pixar sci-fi features top teen anticipation charts.
+                            </div>
+                            <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
+                                <strong class="text-purple-400 block">🎵 Music Drops:</strong> Global synth-wave and indie instrumental study mixes trending this week.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="runAI('culture')" id="btn-culture" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-2.5 rounded-xl transition-all text-xs sm:text-sm flex items-center justify-center space-x-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Refresh Live Radar via Groq AI</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- 👩‍🏫 TEACHER COMMAND CENTER (ALL 4 FEATURES)                                -->
+        <!-- ========================================================================= -->
+        <div id="view-teacher" class="space-y-8 hidden">
+            <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-800 pb-5 gap-4">
+                <div>
+                    <div class="inline-flex items-center space-x-2 text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-1">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                        <span>Educator Workflow Suite</span>
+                    </div>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white">Teacher Command Center</h1>
+                    <p class="text-slate-400 text-sm mt-1">Automated assignment creation, handwritten paper grading, lesson differentiation, and class heatmaps.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- 1. AI Assignment Creator -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="bg-indigo-500/10 p-2.5 rounded-xl text-indigo-400 border border-indigo-500/20">
+                                <i data-lucide="file-plus-2" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-white">1. AI Assignment Creator</h2>
+                                <p class="text-xs text-slate-400">Instantly generate homework, quizzes & grading rubrics</p>
+                            </div>
+                        </div>
+                        <input type="text" id="teacher-topic" value="Newton's Laws of Motion & Friction" placeholder="Enter topic (e.g., Newton's Laws of Motion)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 mb-3">
+                    </div>
+                    <div>
+                        <button onclick="runAI('assignment')" id="btn-assignment" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 text-sm">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span>Generate Homework, Quiz & Rubric</span>
+                        </button>
+                        <div id="out-assignment" class="mt-3 p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-300 hidden max-h-52 overflow-y-auto leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Smart Notebook & Paper Corrector -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-400 border border-emerald-500/20">
+                                <i data-lucide="check-square" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-white">2. Smart Notebook & Paper Corrector</h2>
+                                <p class="text-xs text-slate-400">Automated transcription, rubric matching & line-by-line feedback</p>
+                            </div>
+                        </div>
+
+                        <label class="cursor-pointer bg-slate-950 hover:bg-slate-900 border border-dashed border-slate-700 rounded-xl p-2.5 text-center transition-all flex items-center justify-center space-x-2 text-xs text-slate-300 mb-2.5">
+                            <i data-lucide="camera" class="w-4 h-4 text-emerald-400"></i>
+                            <span id="notebook-file-label">Upload Photo of Student Handwritten Work</span>
+                            <input type="file" accept="image/*" class="hidden" onchange="simulateNotebookUpload(this)">
+                        </label>
+
+                        <textarea id="notebook-input" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500 mb-3" placeholder="Student submission transcription...">Q: State Newton's Second Law. Student wrote: Force is equal to mass times velocity (F = mv), so heavier objects move faster.</textarea>
+                    </div>
+                    <div>
+                        <button onclick="runAI('corrector')" id="btn-corrector" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 text-sm">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>Transcribe, Match Rubric & Grade</span>
+                        </button>
+                        <div id="out-corrector" class="mt-3 p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-300 hidden max-h-52 overflow-y-auto leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- 3. Adaptive Differentiation Engine -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="bg-purple-500/10 p-2.5 rounded-xl text-purple-400 border border-purple-500/20">
+                                <i data-lucide="git-branch" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-white">3. Adaptive Differentiation Engine</h2>
+                                <p class="text-xs text-slate-400">Rewrites core lesson plans for Visual, Analytical & Remedial learners</p>
+                            </div>
+                        </div>
+                        <textarea id="diff-input" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-purple-500 mb-3" placeholder="Enter core lesson plan concept...">Lesson Concept: Covalent vs. Ionic Chemical Bonding and Octet Rule stability.</textarea>
+                    </div>
+                    <div>
+                        <button onclick="runAI('differentiate')" id="btn-differentiate" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 text-sm">
+                            <i data-lucide="layers" class="w-4 h-4"></i>
+                            <span>Generate 3 Differentiated Lesson Variants</span>
+                        </button>
+                        <div id="out-differentiate" class="mt-3 p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-300 hidden max-h-52 overflow-y-auto leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- 4. Class Analytics & Heatmap Dashboard -->
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-rose-500/10 p-2.5 rounded-xl text-rose-400 border border-rose-500/20">
+                                    <i data-lucide="flame" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-white">4. Class Analytics & Heatmap Dashboard</h2>
+                                    <p class="text-xs text-slate-400">Visualizes class-wide conceptual weak spots</p>
+                                </div>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium">38 Students Tracked</span>
+                        </div>
+
+                        <!-- Progress Bars + Conceptual Heatmap Grid -->
+                        <div class="space-y-3.5 mb-4">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300 font-medium">Chemical Bonding (Hybridization & VSEPR)</span>
+                                    <span class="text-rose-400 font-bold">72% Struggled (Critical Gap)</span>
+                                </div>
+                                <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+                                    <div class="bg-gradient-to-r from-orange-500 to-rose-600 h-full w-[72%]"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300 font-medium">Rotational Dynamics (Moment of Inertia)</span>
+                                    <span class="text-amber-400 font-bold">51% Struggled (Moderate)</span>
+                                </div>
+                                <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+                                    <div class="bg-amber-500 h-full w-[51%]"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300 font-medium">Stoichiometry & Mole Concept</span>
+                                    <span class="text-emerald-400 font-bold">14% Struggled (Mastered)</span>
+                                </div>
+                                <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+                                    <div class="bg-emerald-500 h-full w-[14%]"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Topic Mastery Matrix -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+                            <span class="text-[11px] text-slate-400 block mb-2 font-semibold">Real-Time Sub-Topic Heatmap (Click cell to inspect):</span>
+                            <div class="grid grid-cols-4 gap-1.5 text-[10px] text-center font-semibold">
+                                <div onclick="alert('Ionic Bonds: 88% Class Mastery')" class="cursor-pointer bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 py-2 rounded">Ionic (88%)</div>
+                                <div onclick="alert('Covalent Bonds: 79% Class Mastery')" class="cursor-pointer bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 py-2 rounded">Covalent (79%)</div>
+                                <div onclick="alert('Coordinate Bonds: 46% Mastery - Review Needed')" class="cursor-pointer bg-amber-500/20 border border-amber-500/40 text-amber-300 py-2 rounded">Coordinate (46%)</div>
+                                <div onclick="alert('sp3d2 Hybridization: 28% Mastery - Remedial Triggered')" class="cursor-pointer bg-rose-500/30 border border-rose-500/50 text-rose-300 py-2 rounded animate-pulse">Hybridization (28%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- JAVASCRIPT LOGIC & API INTEGRATION                                        -->
+    <!-- ========================================================================= -->
+    <script>
+        lucide.createIcons();
+
+        // 1. Switch between Student Hub and Teacher Command Center
+        function switchMode(mode) {
+            const studentView = document.getElementById('view-student');
+            const teacherView = document.getElementById('view-teacher');
+            const btnStudent = document.getElementById('btn-student');
+            const btnTeacher = document.getElementById('btn-teacher');
+
+            if (mode === 'student') {
+                studentView.classList.remove('hidden');
+                teacherView.classList.add('hidden');
+                btnStudent.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md flex items-center space-x-1.5";
+                btnTeacher.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white flex items-center space-x-1.5";
+            } else {
+                teacherView.classList.remove('hidden');
+                studentView.classList.add('hidden');
+                btnTeacher.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md flex items-center space-x-1.5";
+                btnStudent.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white flex items-center space-x-1.5";
+            }
+        }
+
+        // 2. Helpers for Textbook OCR Upload & Sample Jargon
+        function loadSampleJargon() {
+            document.getElementById('simplify-input').value = "In quantum mechanics, wave function collapse occurs when a wave function—initially in a superposition of several eigenstates—reduces to a single eigenstate due to interaction with the external macroscopic environment (quantum decoherence).";
+        }
+
+        function simulateTextbookOCR(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                document.getElementById('ocr-file-label').innerText = "Scanned: " + fileName;
+                document.getElementById('simplify-input').value = `[OCR Extracted from ${fileName}]: The Second Law of Thermodynamics states that the total entropy of an isolated system always increases over time, or remains constant in ideal cases where the system is in a steady state or undergoing a reversible process.`;
+            }
+        }
+
+        function simulateNotebookUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                document.getElementById('notebook-file-label').innerText = "Uploaded: " + fileName;
+                document.getElementById('notebook-input').value = `[Handwriting OCR from ${fileName}]: Question: Explain Covalent Bonding. Student Answer: Covalent bonding happens when two non-metals share valence electrons to achieve a full outer shell, like in H2O and CO2.`;
+            }
+        }
+
+        // 3. Webcam Toggle for Live Writing Vision Tutor
+        let visionStream = null;
+        async function toggleVisionCamera() {
+            const video = document.getElementById('vision-video');
+            const placeholder = document.getElementById('vision-placeholder');
+            const btnText = document.getElementById('vision-cam-text');
+
+            if (visionStream) {
+                visionStream.getTracks().forEach(track => track.stop());
+                visionStream = null;
+                video.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                btnText.innerText = "Start Webcam";
+                return;
+            }
+
+            try {
+                visionStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = visionStream;
+                video.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                btnText.innerText = "Stop Webcam";
+            } catch (err) {
+                alert("Webcam access unavailable or denied. You can still test the Vision Tutor using the live equation input box below!");
+            }
+        }
+
+        // 4. Visual Concept Hub Switcher & History Timeline
+        function switchVisualTab(tab) {
+            ['bond', 'tectonic', 'history'].forEach(t => {
+                document.getElementById('visual-' + t).classList.add('hidden');
+                document.getElementById('visual-' + t).classList.remove('flex');
+                document.getElementById('vtab-' + t).className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-950 text-slate-400 border border-slate-800";
+            });
+            document.getElementById('visual-' + tab).classList.remove('hidden');
+            document.getElementById('visual-' + tab).classList.add('flex');
+            document.getElementById('vtab-' + tab).className = "flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold bg-purple-600 text-white";
+        }
+
+        const timelineEvents = [
+            { year: "3000 BCE — Indus Valley Civilization", desc: "Advanced urban planning, baked brick houses, and intricate drainage systems across Harappa and Mohenjo-daro." },
+            { year: "1760 — First Industrial Revolution", desc: "Transition to steam power, mechanized textile manufacturing, and iron production." },
+            { year: "1947 — Indian Independence & Modern Era", desc: "Constitutional democracy established alongside rapid scientific and educational institutional growth." },
+            { year: "1969 — Apollo 11 & Space Age", desc: "Humanity steps onto the lunar surface, accelerating global satellite and computing revolutions." }
+        ];
+        function updateTimeline(idx) {
+            const ev = timelineEvents[idx];
+            document.getElementById('timeline-card').innerHTML = `
+                <span class="text-xs font-bold text-purple-400">${ev.year}</span>
+                <p class="text-xs text-slate-300 mt-1">${ev.desc}</p>
+            `;
+        }
+
+        // 5. Downloadable Past Board Papers Generator
+        function downloadMockPaper(filename, title) {
+            const content = `${title}\n========================================\n1. Derive the expression for electric field intensity due to an electric dipole on its axial line. [3 Marks]\n   Marking Scheme: Diagram (1M) + Derivation (1.5M) + Final Vector Form (0.5M)\n\n2. Explain the principle of a capacitor and derive the energy stored in a parallel plate capacitor. [5 Marks]\n   Marking Scheme: Principle (1M) + Work done integration (2.5M) + U = 1/2 CV^2 (1.5M)\n`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        // 6. In-Browser Peer Study Room Chat
+        function sendPeerMessage() {
+            const input = document.getElementById('peer-input');
+            const box = document.getElementById('peer-chat-box');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            box.innerHTML += `<div class="text-slate-200"><strong class="text-pink-400">You:</strong> ${msg}</div>`;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            setTimeout(() => {
+                box.innerHTML += `<div class="text-slate-400"><strong class="text-cyan-400">Aarav:</strong> Got it! Let's verify that step with the AI Homework Assistant too.</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 900);
+        }
+
+        // 7. Unified Backend AI Runner (Connects to server.py)
+        async function runAI(feature) {
+            const language = document.getElementById('global-lang').value;
+            let payload = { feature, language };
+            let outDiv = document.getElementById('out-' + feature);
+            let btn = document.getElementById('btn-' + feature);
+
+            if (feature === 'simplify') {
+                payload.text = document.getElementById('simplify-input').value.trim();
+                if (!payload.text) return alert("Please enter or upload textbook text first.");
+            } else if (feature === 'vision') {
+                payload.text = document.getElementById('vision-input').value.trim();
+            } else if (feature === 'exam') {
+                payload.board = document.getElementById('exam-board').value;
+                payload.text = document.getElementById('exam-topic').value.trim();
+            } else if (feature === 'assignment') {
+                payload.text = document.getElementById('teacher-topic').value.trim();
+            } else if (feature === 'corrector') {
+                payload.text = document.getElementById('notebook-input').value.trim();
+            } else if (feature === 'differentiate') {
+                payload.text = document.getElementById('diff-input').value.trim();
+            }
+
+            const originalBtnHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span>Processing via AI...</span>`;
+            outDiv.classList.remove('hidden');
+            outDiv.innerHTML = `<span class="text-slate-400 animate-pulse">Running AI inference (${language})...</span>`;
+
+            try {
+                const res = await fetch('/api/ai-action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.result) {
+                    outDiv.innerHTML = data.result.replace(/\n/g, '<br>');
+                } else {
+                    outDiv.innerHTML = `<span class="text-rose-400">Error: ${data.error || 'Failed to generate response'}</span>`;
+                }
+            } catch (err) {
+                outDiv.innerHTML = `<span class="text-rose-400">Make sure server.py is running! (python server.py)</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHTML;
+                lucide.createIcons();
+            }
+        }
+
+        // 8. Socratic AI Homework Assistant Chat
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            const language = document.getElementById('global-lang').value;
+            const chatBox = document.getElementById('chat-messages');
+
+            if (!message) return;
+
+            chatBox.innerHTML += `<div class="bg-indigo-600/20 border border-indigo-500/30 p-2.5 rounded-lg text-slate-100 ml-6 text-right">${message}</div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, language })
+                });
+                const data = await res.json();
+                if (data.reply) {
+                    chatBox.innerHTML += `<div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-indigo-300 mr-6">${data.reply.replace(/\n/g, '<br>')}</div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="bg-rose-950/40 border border-rose-900 p-2.5 rounded-lg text-rose-300">Error: ${data.error}</div>`;
+                }
+            } catch (err) {
+                chatBox.innerHTML += `<div class="bg-rose-950/40 border border-rose-900 p-2.5 rounded-lg text-rose-300">Start server.py to enable live Groq chat!</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
